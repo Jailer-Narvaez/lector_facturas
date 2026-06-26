@@ -1,0 +1,27 @@
+.kpis {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.kpi {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  min-width: 120px;
+  box-shadow: var(--shadow);
+}
+.label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--faint);
+}
+.value {
+  font-size: 19px;
+  font-weight: 700;
+  margin-top: 3px;
+}
+.accent {
+  color: var(--accent);
+}

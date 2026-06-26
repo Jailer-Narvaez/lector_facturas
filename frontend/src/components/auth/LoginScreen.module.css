@@ -1,0 +1,76 @@
+.screen {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 34px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+}
+
+.logo {
+  width: 120px;
+  margin: 0 auto 4px;
+}
+.card h1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+.sub {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: -8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+.field span {
+  font-size: 11px;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.field input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  color: var(--text);
+  font: 400 13.5px 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(34, 156, 192, 0.18);
+}
+
+.error {
+  color: var(--accent-5);
+  font-size: 12px;
+  min-height: 14px;
+}
+.hint {
+  font-size: 11.5px;
+  color: var(--faint);
+}
+.hint b {
+  color: var(--accent-2);
+  font-weight: 600;
+}

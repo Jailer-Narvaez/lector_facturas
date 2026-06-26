@@ -1,0 +1,40 @@
+:root {
+  /* Paleta Davrant (davrant.com) — dark tech */
+  --bg: #07090f;
+  --bg-soft: #0d111c;
+  --surface: #0d111c;
+  --surface-2: #131829;
+  --border: #1f2540;
+  --text: #e6e9f5;
+  --muted: #7a83a8;
+  --faint: #4a5378;
+  --accent: #229cc0; /* azul Davrant (marca) */
+  --accent-2: #00e5ff; /* cian (tonos claros) */
+  --accent-3: #7c5cff; /* violeta */
+  --accent-4: #ffb020; /* ámbar */
+  --accent-5: #ff3366; /* rosa */
+  --radius: 14px;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(34, 156, 192, 0.1), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(0, 229, 255, 0.07), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
