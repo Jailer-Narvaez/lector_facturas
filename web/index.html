@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Davrant · Análisis de Facturas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Encabezado -->
+    <header class="topbar">
+      <div class="brand">
+        <img src="/img/logo.png" alt="logo" class="logo">
+        <div>
+          <h1>Davrant <span>Analytics</span></h1>
+          <p class="sub">Análisis de facturas · soluciones empresariales</p>
+        </div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+    </header>
+
+    <!-- Contenido -->
+    <main class="grid">
+      <section class="card card-bar">
+        <div class="card-head">
+          <h2>Ventas por servicio</h2>
+          <span class="hint">COP</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartBar"></canvas></div>
+      </section>
+
+      <section class="card card-dough">
+        <div class="card-head">
+          <h2>Participación</h2>
+          <span class="hint">% ventas</span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartDough"></canvas></div>
+      </section>
+
+      <section class="card card-table">
+        <div class="card-head">
+          <h2>Resumen por cliente</h2>
+          <span class="hint" id="tblCount"></span>
+        </div>
+        <div class="table-wrap">
+          <table id="tabla">
+            <thead>
+              <tr><th>Cliente</th><th class="num">Servicios</th><th class="num">Unidades</th><th class="num">Total</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
