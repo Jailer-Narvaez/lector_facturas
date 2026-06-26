@@ -9,51 +9,117 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app">
-    <!-- Encabezado -->
-    <header class="topbar">
-      <div class="brand">
-        <img src="/img/logo.png" alt="logo" class="logo">
-        <div>
-          <h1>Davrant <span>Analytics</span></h1>
-          <p class="sub">Análisis de facturas · soluciones empresariales</p>
-        </div>
+
+  <!-- ============ LOGIN ============ -->
+  <div id="view-login" class="login-screen">
+    <form class="login-card" id="loginForm">
+      <img src="/img/logo.png" alt="Davrant" class="login-logo" />
+      <h1>Bienvenido</h1>
+      <p class="login-sub">Panel de análisis de facturas</p>
+
+      <label class="field">
+        <span>Correo</span>
+        <input type="email" id="email" autocomplete="username" value="admin@davrant.com" required />
+      </label>
+      <label class="field">
+        <span>Contraseña</span>
+        <input type="password" id="password" autocomplete="current-password" value="demo123" required />
+      </label>
+
+      <button type="submit" class="btn-primary">Entrar</button>
+      <p class="login-error" id="loginError"></p>
+      <p class="login-hint">Demo · <b>admin@davrant.com</b> / <b>demo123</b></p>
+    </form>
+  </div>
+
+  <!-- ============ APP (shell) ============ -->
+  <div id="view-app" class="shell hidden">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <img src="/img/logo.png" alt="Davrant" class="side-logo" />
       </div>
-      <div class="kpis" id="kpis"></div>
-    </header>
+      <nav class="side-nav">
+        <button class="nav-item active" data-panel="upload">
+          <span class="nav-ico">⬆</span> Cargar facturas
+        </button>
+        <button class="nav-item" data-panel="dashboard">
+          <span class="nav-ico">▣</span> Dashboard
+        </button>
+      </nav>
+      <div class="side-foot">
+        <span class="side-user" id="sideUser"></span>
+        <button id="logoutBtn" class="logout">Cerrar sesión</button>
+      </div>
+    </aside>
 
     <!-- Contenido -->
-    <main class="grid">
-      <section class="card card-bar">
-        <div class="card-head">
-          <h2>Ventas por servicio</h2>
-          <span class="hint">COP</span>
+    <main class="content">
+
+      <!-- MÓDULO 1: CARGAR FACTURAS -->
+      <section id="panel-upload" class="panel">
+        <header class="panel-head">
+          <h2>Cargar facturas</h2>
+          <p>Sube las facturas en PDF para analizarlas.</p>
+        </header>
+
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="fileInput" accept="application/pdf" multiple hidden />
+          <div class="dz-inner">
+            <span class="dz-icon">⬆</span>
+            <p>Arrastra tus PDF aquí o <span class="dz-link">selecciónalos</span></p>
+            <small>Solo archivos .pdf</small>
+          </div>
         </div>
-        <div class="chart-wrap"><canvas id="chartBar"></canvas></div>
+
+        <ul class="file-list" id="fileList"></ul>
+
+        <div class="panel-actions">
+          <span class="files-count" id="filesCount"></span>
+          <button id="processBtn" class="btn-primary" disabled>Procesar facturas</button>
+        </div>
       </section>
 
-      <section class="card card-dough">
-        <div class="card-head">
-          <h2>Participación</h2>
-          <span class="hint">% ventas</span>
+      <!-- MÓDULO 2: DASHBOARD -->
+      <section id="panel-dashboard" class="panel hidden">
+        <div class="dash">
+          <header class="topbar">
+            <div class="brand">
+              <div>
+                <h1>Dashboard <span>de ventas</span></h1>
+                <p class="sub">Análisis de facturas · soluciones empresariales</p>
+              </div>
+            </div>
+            <div class="kpis" id="kpis"></div>
+          </header>
+
+          <main class="grid">
+            <section class="card card-bar">
+              <div class="card-head"><h2>Ventas por servicio</h2><span class="hint">COP</span></div>
+              <div class="chart-wrap"><canvas id="chartBar"></canvas></div>
+            </section>
+
+            <section class="card card-dough">
+              <div class="card-head"><h2>Participación</h2><span class="hint">% ventas</span></div>
+              <div class="chart-wrap"><canvas id="chartDough"></canvas></div>
+            </section>
+
+            <section class="card card-table">
+              <div class="card-head"><h2>Resumen por cliente</h2><span class="hint" id="tblCount"></span></div>
+              <div class="table-wrap">
+                <table id="tabla">
+                  <thead>
+                    <tr><th>Cliente</th><th class="num">Servicios</th><th class="num">Unidades</th><th class="num">Total</th></tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </section>
+          </main>
         </div>
-        <div class="chart-wrap"><canvas id="chartDough"></canvas></div>
       </section>
 
-      <section class="card card-table">
-        <div class="card-head">
-          <h2>Resumen por cliente</h2>
-          <span class="hint" id="tblCount"></span>
-        </div>
-        <div class="table-wrap">
-          <table id="tabla">
-            <thead>
-              <tr><th>Cliente</th><th class="num">Servicios</th><th class="num">Unidades</th><th class="num">Total</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
     </main>
   </div>
 

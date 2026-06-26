@@ -1,9 +1,9 @@
 # Lector de Facturas · Davrant Analytics
 
-Lee facturas en PDF (carpeta `facturas/`), extrae las líneas de detalle
-(**Servicio, Cantidad, Precio, Total**) con Python + pandas, genera un JSON de
-análisis en `output/` y lo visualiza en un dashboard web con paleta oscura
-premium.
+Demo full-stack: sube facturas en PDF desde el navegador, un backend **FastAPI**
+las procesa con Python + pandas (extrae **Servicio, Cantidad, Precio, Total**),
+regenera un JSON de análisis y un **dashboard** lo visualiza. Paleta oscura
+basada en [davrant.com](https://davrant.com).
 
 ---
 
@@ -18,47 +18,75 @@ premium.
 
 ```
 lector_facturas/
-├── main.py                 # Punto de entrada: extrae → analiza → exporta
+├── api.py                  # Backend FastAPI: /api/procesar + sirve el front
+├── main.py                 # CLI alterno: extrae → analiza → exporta (sin web)
 ├── src/
 │   ├── extractor.py        # LectorFacturas + LineaServicio (lee los PDF)
 │   ├── analizador.py       # AnalizadorFacturas (DataFrames con pandas)
 │   └── exportador.py       # ExportadorJSON (escribe output/analisis.json)
-├── facturas/               # PDFs de entrada
+├── facturas/               # PDFs de muestra (entrada del modo CLI)
 ├── output/
 │   └── analisis.json       # Resultado del análisis (consumido por el front)
+├── img/logo.png            # Logo
 └── web/
-    ├── index.html          # Dashboard
-    ├── styles.css          # Estilos (paleta oscura premium)
-    └── app.js              # Carga el JSON y dibuja KPIs, tabla y gráficos
+    ├── index.html          # SPA: login + módulos (cargar facturas / dashboard)
+    ├── styles.css          # Estilos (paleta Davrant)
+    └── app.js              # Auth demo, carga de archivos y gráficos (Chart.js)
 ```
 
 ---
 
 ## 1. Instalación
 
-Crea el entorno virtual e instala las dependencias:
-
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install pdfplumber pandas
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
 > En macOS/Linux usa `.venv/bin/python` en lugar de `.\.venv\Scripts\python.exe`.
 
 ---
 
-## 2. Generar el análisis (Python)
+## 2. Ejecutar la app (backend + front)
 
-Coloca las facturas PDF en `facturas/` y ejecuta:
+Levanta el servidor FastAPI **desde la raíz del proyecto**:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn api:app --port 8000 --reload
+```
+
+Abre **http://localhost:8000/** en el navegador.
+
+### Flujo
+
+1. **Login (demo):** `admin@davrant.com` / `demo123`.
+2. **Cargar facturas:** arrastra o selecciona PDFs y pulsa **Procesar facturas**.
+   - El front hace `POST /api/procesar` con los archivos.
+   - El backend procesa **solo los PDF subidos** (en una carpeta temporal
+     aislada), regenera `output/analisis.json` y devuelve el reporte.
+3. **Dashboard:** muestra KPIs, ventas por servicio (barras), participación
+   (doughnut) y resumen por cliente (tabla).
+
+> Cada carga es independiente: no se acumula ni se mezcla con `facturas/`. La
+> carpeta `facturas/` queda solo como datos de muestra para el modo CLI
+> (`main.py`).
+
+---
+
+## 3. Alternativa: solo CLI (sin web)
+
+Para generar el JSON sin levantar el servidor:
 
 ```powershell
 .\.venv\Scripts\python.exe main.py
 ```
 
-Esto crea/actualiza **`output/analisis.json`** y muestra los KPIs por consola.
+Crea/actualiza `output/analisis.json` y muestra los KPIs por consola.
 
-El JSON contiene cuatro secciones:
+---
+
+## JSON de salida (`output/analisis.json`)
 
 | Clave | Descripción |
 |-------|-------------|
@@ -68,26 +96,6 @@ El JSON contiene cuatro secciones:
 | `detalle` | Una fila por línea de servicio (tabla base) |
 
 Los importes se exportan como **números** (no texto), listos para JavaScript.
-
----
-
-## 3. Ver el dashboard (Web)
-
-El navegador bloquea `fetch()` sobre `file://`, así que sirve el proyecto con un
-servidor local **desde la raíz**:
-
-```powershell
-.\.venv\Scripts\python.exe -m http.server 8000
-```
-
-Abre **http://localhost:8000/web/** en el navegador.
-
-El front lee `../output/analisis.json` y muestra:
-
-- **KPIs** (ventas totales, facturas, unidades, ticket promedio, servicio top)
-- **Gráfico de barras**: ventas por servicio
-- **Doughnut**: participación porcentual por servicio
-- **Tabla**: resumen por cliente
 
 ---
 
@@ -105,7 +113,7 @@ formato colombiano (`$1.000.000`). El extractor parsea cada línea con el patró
 
 ## Notas
 
-- Para reproducir el entorno, puedes congelar dependencias con
-  `.\.venv\Scripts\python.exe -m pip freeze > requirements.txt`.
-- El front usa [Chart.js](https://www.chartjs.org/) vía CDN (requiere conexión a
-  internet la primera vez).
+- El login es **solo demo** (credenciales en el cliente); no usar en producción.
+- El front usa [Chart.js](https://www.chartjs.org/) vía CDN (requiere internet la
+  primera vez).
+- `uvicorn ... --reload` recarga el backend al guardar cambios en Python.
