@@ -18,45 +18,86 @@ basada en [davrant.com](https://davrant.com).
 
 ```
 lector_facturas/
-├── api.py                  # Backend FastAPI: /api/procesar + sirve el front
-├── main.py                 # CLI alterno: extrae → analiza → exporta (sin web)
-├── src/
-│   ├── extractor.py        # LectorFacturas + LineaServicio (lee los PDF)
-│   ├── analizador.py       # AnalizadorFacturas (DataFrames con pandas)
-│   └── exportador.py       # ExportadorJSON (escribe output/analisis.json)
-├── facturas/               # PDFs de muestra (entrada del modo CLI)
-├── output/
-│   └── analisis.json       # Resultado del análisis (consumido por el front)
-├── img/logo.png            # Logo
-└── web/
-    ├── index.html          # SPA: login + módulos (cargar facturas / dashboard)
-    ├── styles.css          # Estilos (paleta Davrant)
-    └── app.js              # Auth demo, carga de archivos y gráficos (Chart.js)
+├── backend/                # API FastAPI + pipeline de análisis (Python)
+│   ├── api.py              # /api/procesar + sirve frontend/dist
+│   ├── main.py             # CLI alterno: extrae → analiza → exporta (sin web)
+│   ├── requirements.txt    # Dependencias Python
+│   ├── src/
+│   │   ├── extractor.py    # LectorFacturas + LineaServicio (lee los PDF)
+│   │   ├── analizador.py   # AnalizadorFacturas (DataFrames con pandas)
+│   │   └── exportador.py   # ExportadorJSON (escribe output/analisis.json)
+│   ├── facturas/           # PDFs de muestra (entrada del modo CLI)
+│   ├── output/
+│   │   └── analisis.json   # Resultado del análisis (consumido por el front)
+│   └── img/logo.png        # Logo (servido por la API)
+└── frontend/               # SPA en React + Vite + TypeScript
+    ├── index.html          # HTML raíz de Vite
+    ├── vite.config.ts      # Proxy a FastAPI en dev (/api, /img, /output)
+    ├── dist/               # Build de producción (lo sirve FastAPI)
+    └── src/
+        ├── main.tsx        # Punto de entrada de React
+        ├── App.tsx         # Orquesta auth + navegación + estado del reporte
+        ├── types/          # Tipos del reporte (report.ts)
+        ├── lib/            # api, formato, paleta, registro de Chart.js
+        ├── hooks/          # useAuth (login demo)
+        ├── styles/         # theme.css (tokens + reset, paleta Davrant)
+        └── components/     # ui · auth · layout · upload · dashboard
 ```
+
+> El `.venv` de Python vive en la raíz del proyecto; el backend se ejecuta
+> desde `backend/` usando ese intérprete (`..\.venv\Scripts\python.exe`).
 
 ---
 
 ## 1. Instalación
 
+### Backend (Python)
+
+Desde la **raíz del proyecto**:
+
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
 ```
 
 > En macOS/Linux usa `.venv/bin/python` en lugar de `.\.venv\Scripts\python.exe`.
 
----
-
-## 2. Ejecutar la app (backend + front)
-
-Levanta el servidor FastAPI **desde la raíz del proyecto**:
+### Frontend (Node 18+)
 
 ```powershell
-.\.venv\Scripts\python.exe -m uvicorn api:app --port 8000 --reload
+cd frontend
+npm install
+```
+
+---
+
+## 2. Ejecutar la app
+
+### Opción A — Producción (un solo servidor)
+
+Compila el front y deja que FastAPI lo sirva en el mismo origen:
+
+```powershell
+cd frontend; npm run build; cd ..\backend
+..\.venv\Scripts\python.exe -m uvicorn api:app --port 8000 --reload
 ```
 
 Abre **http://localhost:8000/** en el navegador.
+
+### Opción B — Desarrollo del front (hot reload)
+
+Dos terminales. El dev server de Vite proxya `/api`, `/img` y `/output` al backend:
+
+```powershell
+# Terminal 1 — backend (desde backend/)
+cd backend; ..\.venv\Scripts\python.exe -m uvicorn api:app --port 8000 --reload
+
+# Terminal 2 — frontend (desde frontend/)
+cd frontend; npm run dev
+```
+
+Abre **http://localhost:5173/** (la URL que imprime Vite).
 
 ### Flujo
 
@@ -76,13 +117,14 @@ Abre **http://localhost:8000/** en el navegador.
 
 ## 3. Alternativa: solo CLI (sin web)
 
-Para generar el JSON sin levantar el servidor:
+Para generar el JSON sin levantar el servidor (lee `backend/facturas/`):
 
 ```powershell
-.\.venv\Scripts\python.exe main.py
+cd backend
+..\.venv\Scripts\python.exe main.py
 ```
 
-Crea/actualiza `output/analisis.json` y muestra los KPIs por consola.
+Crea/actualiza `backend/output/analisis.json` y muestra los KPIs por consola.
 
 ---
 
@@ -113,7 +155,11 @@ formato colombiano (`$1.000.000`). El extractor parsea cada línea con el patró
 
 ## Notas
 
-- El login es **solo demo** (credenciales en el cliente); no usar en producción.
-- El front usa [Chart.js](https://www.chartjs.org/) vía CDN (requiere internet la
-  primera vez).
-- `uvicorn ... --reload` recarga el backend al guardar cambios en Python.
+- El login es **solo demo** (credenciales en el cliente, en `useAuth`); no usar
+  en producción.
+- El front (React + TypeScript) usa [Chart.js](https://www.chartjs.org/) vía
+  `react-chartjs-2`, empaquetado por Vite (sin CDN).
+- `uvicorn ... --reload` recarga el backend al guardar cambios en Python;
+  `npm run dev` recarga el front en caliente.
+- Hay que **recompilar el front** (`npm run build`) para que la Opción A refleje
+  cambios del frontend.

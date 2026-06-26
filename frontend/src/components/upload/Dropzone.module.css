@@ -1,0 +1,39 @@
+.dropzone {
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.dropzone:hover,
+.over {
+  border-color: var(--accent);
+  background: rgba(34, 156, 192, 0.05);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  font-size: 20px;
+  background: rgba(34, 156, 192, 0.12);
+  color: var(--accent-2);
+}
+.inner p {
+  font-size: 13.5px;
+  color: var(--text);
+}
+.link {
+  color: var(--accent-2);
+  text-decoration: underline;
+}
+.inner small {
+  font-size: 11px;
+  color: var(--faint);
+}
